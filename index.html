@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomenclador Maestro - Dark Edition</title>
+    <style>
+        :root {
+            /* Colores modo oscuro (Predeterminado) */
+            --primary: #60a5fa;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --input-border: #475569;
+            --result-bg: #334155;
+            --accent: #22c55e;
+        }
+
+        [data-theme="light"] {
+            /* Colores modo claro */
+            --primary: #1e40af;
+            --bg: #cbd5e1;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --input-border: #94a3b8;
+            --result-bg: #f1f5f9;
+            --accent: #16a34a;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .container { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            width: 100%; 
+            max-width: 650px; 
+            transition: background 0.3s ease;
+        }
+
+        .header-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--input-border);
+            padding-bottom: 15px;
+        }
+
+        h2 { color: var(--primary); margin: 0; font-size: 1.4rem; }
+
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        select, input { 
+            width: 100%; padding: 12px; margin-top: 5px; 
+            border: 1px solid var(--input-border); 
+            border-radius: 8px; box-sizing: border-box; 
+            font-size: 1rem; background: var(--card-bg); color: var(--text);
+            outline: none;
+        }
+
+        select:focus, input:focus { border-color: var(--primary); }
+
+        .result-area { 
+            margin-top: 25px; padding: 20px; 
+            background: var(--result-bg); 
+            border-radius: 10px; border: 2px solid var(--primary); 
+            position: relative;
+        }
+
+        #finalText { 
+            font-family: 'Consolas', 'Monaco', monospace; font-weight: bold; 
+            font-size: 1.1rem; word-break: break-all; min-height: 1.5em;
+            color: var(--text);
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+
+        button { 
+            flex: 1; padding: 12px; border: none; border-radius: 6px; 
+            cursor: pointer; font-weight: bold; transition: 0.2s; 
+            text-transform: uppercase; font-size: 0.8rem;
+        }
+
+        .copy-btn { background: var(--primary); color: #0f172a; }
+        .clear-btn { background: #ef4444; color: white; }
+        .theme-btn { 
+            background: transparent; border: 1px solid var(--primary); 
+            color: var(--primary); width: auto; flex: none; padding: 6px 12px;
+            text-transform: none; font-size: 0.8rem;
+        }
+
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-tools">
+        <h2>Generador de Nomenclaturas - [MDP]</h2>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeToggle">Modo Claro ☀️</button>
+    </div>
+
+    <label>1. Método de Operación:</label>
+    <select id="metodo" onchange="cargarProveedores()">
+        <option value="">-- Seleccionar --</option>
+        <option value="deposito">📥 Depósito</option>
+        <option value="retiro">📤 Retiro</option>
+        <option value="debito">💳 Débito</option>
+    </select>
+
+    <label>2. Proveedor:</label>
+    <select id="proveedor" onchange="cargarOpciones()" disabled>
+        <option value="">Elija el método primero</option>
+    </select>
+
+    <label>3. Variante de Nomenclatura:</label>
+    <select id="opcion" onchange="generar()" disabled>
+        <option value="">Elija el proveedor primero</option>
+    </select>
+
+    <label>4. ID / Referencia / Username:</label>
+    <input type="text" id="referencia" placeholder="Pegue aquí el ID o Referencia..." oninput="generar()">
+
+    <div class="result-area">
+        <div id="finalText">Esperando datos...</div>
+        <div class="btn-group">
+            <button class="copy-btn" onclick="copiar()">Copiar Texto</button>
+            <button class="clear-btn" onclick="limpiarFormulario()">Limpiar Todo</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const data = {
+    deposito: {
+        "PagoFacil": ["[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO CB: XXX", "[179] ACREDITACION POR DEPOSITO NO REGISTRADO NT: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX ID: XXX"],
+        "AstroPay": ["[169] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX", "[169] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
+        "Rapyd": ["[178] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[178] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "GammaG": ["[171] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[171] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Gigadat": ["[185] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
+        "Directa24": ["[97] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "SafetyPay": ["[174] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "ALPS": ["[14] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Monnet": ["[64] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Payphone": ["[187] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Greenpay": ["[170] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Paycash": ["[190] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Nuvei": ["[173] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "R4": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: R4 REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: R4 REF: XXX ID: XXX"],
+        "Banco de Venezuela": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BDV REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BDV REF: XXX ID: XXX"],
+        "TotalPago": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX"]
+    },
+    retiro: {
+        "PagoFacil": ["[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX", "[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [02] ID: XXX"],
+        "Astropay": ["[169] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX", "[169] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "Gigadat": ["[185] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX"],
+        "Rapyd": ["[178] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "GammaG": ["[171] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "Directa24": ["[97] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "ALPS": ["[14] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "Nuvei": ["[173] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01]"],
+        "Monnet": ["[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"],
+        "WireTransfer": ["[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"]
+    },
+    debito: {
+        "ALPS": ["[14] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Astropay": ["[169] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Banco de Venezuela": ["[176] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX - (username)"],
+        "Directa24": ["[97] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "GammaG": ["[171] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Gigadat": ["[185] INCORRECT ACCREDITATION ADJUSTMENT ID: XXX"],
+        "Greenpay": ["[170] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Monnet": ["[64] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Nuvei": ["[173] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "PagoFacil": ["[179] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[179] DEBITO POR DEPÓSITO ID: XXX"],
+        "Paycash": ["[190] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Payphone": ["[187] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "R4": ["[177] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[177] DEBITO POR DEPÓSITO ID: XXX", "[177] DEBITO POR DEPÓSITO ID: XXX - (username)"],
+        "Rapyd": ["[178] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "SafetyPay": ["[174] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "TotalPago": ["[59] AJUSTE POR ACREDITACION ERRADA ID: XXX"]
+    }
+};
+
+function cargarProveedores() {
+    const met = document.getElementById('metodo').value;
+    const provSelect = document.getElementById('proveedor');
+    provSelect.innerHTML = '<option value="">Seleccione Proveedor...</option>';
+    if (met) {
+        Object.keys(data[met]).sort().forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p; opt.innerText = p;
+            provSelect.appendChild(opt);
+        });
+        provSelect.disabled = false;
+    } else {
+        provSelect.disabled = true;
+    }
+    cargarOpciones();
+}
+
+function cargarOpciones() {
+    const met = document.getElementById('metodo').value;
+    const prov = document.getElementById('proveedor').value;
+    const opcSelect = document.getElementById('opcion');
+    opcSelect.innerHTML = '<option value="">Seleccione Variante...</option>';
+    if (met && prov) {
+        data[met][prov].forEach(o => {
+            let opt = document.createElement('option');
+            opt.value = o; opt.innerText = o;
+            opcSelect.appendChild(opt);
+        });
+        opcSelect.disabled = false;
+    } else {
+        opcSelect.disabled = true;
+    }
+    generar();
+}
+
+function generar() {
+    const base = document.getElementById('opcion').value;
+    const ref = document.getElementById('referencia').value.trim() || "XXX";
+    const res = base.replace(/XXX/g, ref);
+    document.getElementById('finalText').innerText = base ? res : "Esperando datos...";
+}
+
+function copiar() {
+    const txt = document.getElementById('finalText').innerText;
+    if(txt === "Esperando datos...") return;
+    navigator.clipboard.writeText(txt);
+    
+    // Feedback visual simple
+    const btn = document.querySelector('.copy-btn');
+    const originalText = btn.innerText;
+    btn.innerText = "¡COPIADO!";
+    btn.style.background = "var(--accent)";
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = "var(--primary)";
+    }, 1500);
+}
+
+function limpiarFormulario() {
+    document.getElementById('metodo').value = "";
+    document.getElementById('referencia').value = "";
+    cargarProveedores();
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('themeToggle');
+    if (body.getAttribute('data-theme') === 'light') {
+        body.removeAttribute('data-theme');
+        btn.innerText = "Modo Claro ☀️";
+    } else {
+        body.setAttribute('data-theme', 'light');
+        btn.innerText = "Modo Oscuro 🌙";
+    }
+}
+</script>
+</body>
+</html>
