@@ -33,7 +33,7 @@
 
 <div class="container">
     <div class="header-tools">
-        <h2>Generador de Nomenclaturas</h2>
+        <h2>Generador de Nomenclaturas [MDP] </h2>
         <button class="theme-btn" onclick="toggleTheme()" id="themeToggle">Modo Claro ☀️</button>
     </div>
 
@@ -56,6 +56,10 @@
     </select>
 
     <div id="dynamicContainer" class="dynamic-inputs">
+        <div id="field-REF" style="display:none">
+            <label>Completar REF:</label>
+            <input type="text" id="val-REF" placeholder="Ingresa la Referencia aquí..." oninput="generar()">
+        </div>
         <div id="field-ID" style="display:none">
             <label>Completar ID:</label>
             <input type="text" id="val-ID" placeholder="Ingresa el ID aquí..." oninput="generar()">
@@ -63,10 +67,6 @@
         <div id="field-IDP" style="display:none">
             <label>Completar IDP:</label>
             <input type="text" id="val-IDP" placeholder="Ingresa el IDP aquí..." oninput="generar()">
-        </div>
-        <div id="field-REF" style="display:none">
-            <label>Completar REF:</label>
-            <input type="text" id="val-REF" placeholder="Ingresa la Referencia aquí..." oninput="generar()">
         </div>
         <div id="field-CB" style="display:none">
             <label>Completar CB:</label>
@@ -173,22 +173,17 @@ function gestionarInputs() {
     const base = document.getElementById('opcion').value;
     const container = document.getElementById('dynamicContainer');
     
-    // Vinculamos cada etiqueta a su caja de texto correspondiente
+    // Mapeo exacto para detectar qué campos mostrar
     const fields = { 
-        "ID: XXX": "field-ID", 
-        "IDP: XXX": "field-IDP", 
-        "REF: XXX": "field-REF", 
-        "CB: XXX": "field-CB", 
-        "NT: XXX": "field-NT", 
-        "(username)": "field-USER" 
+        "REF: XXX": "field-REF", "ID: XXX": "field-ID", "IDP: XXX": "field-IDP", 
+        "CB: XXX": "field-CB", "NT: XXX": "field-NT", "(username)": "field-USER" 
     };
     
     let visible = false;
     for (let key in fields) {
         const div = document.getElementById(fields[key]);
         const input = div.querySelector('input');
-        // Si la plantilla incluye la llave exacta, muestra el campo
-        if (base.includes(key)) { 
+        if (base && base.includes(key)) { 
             div.style.display = "block"; visible = true; 
         } else { 
             div.style.display = "none"; input.value = ""; 
@@ -200,27 +195,21 @@ function gestionarInputs() {
 
 function generar() {
     let res = document.getElementById('opcion').value;
-    if (!res) { 
-        document.getElementById('finalText').innerText = "Esperando selección..."; 
-        return; 
-    }
+    if (!res) { document.getElementById('finalText').innerText = "Esperando selección..."; return; }
 
-    // Reemplazos de bloques con XXX (ID, REF, etc.)
+    // Reemplazos de bloques fijos con XXX
+    if (res.includes("REF: XXX")) res = res.replace("REF: XXX", "REF: " + (document.getElementById('val-REF').value || "XXX"));
+    if (res.includes("ID: XXX")) res = res.replace("ID: XXX", "ID: " + (document.getElementById('val-ID').value || "XXX"));
     if (res.includes("IDP: XXX")) res = res.replace("IDP: XXX", "IDP: " + (document.getElementById('val-IDP').value || "XXX"));
     if (res.includes("CB: XXX")) res = res.replace("CB: XXX", "CB: " + (document.getElementById('val-CB').value || "XXX"));
     if (res.includes("NT: XXX")) res = res.replace("NT: XXX", "NT: " + (document.getElementById('val-NT').value || "XXX"));
-    if (res.includes("REF: XXX")) res = res.replace("REF: XXX", "REF: " + (document.getElementById('val-REF').value || "XXX"));
-    if (res.includes("ID: XXX")) res = res.replace("ID: XXX", "ID: " + (document.getElementById('val-ID').value || "XXX"));
     
-    // TRATAMIENTO PARA USERNAME: Mantiene los paréntesis fijos
+    // Username con mantenimiento de paréntesis estrictos
     if (res.includes("(username)")) {
         let userVal = document.getElementById('val-USER').value;
-        // Si hay texto, pone (texto), si no, deja (username)
         res = res.replace("(username)", userVal ? "(" + userVal + ")" : "(username)");
     }
-
     document.getElementById('finalText').innerText = res;
-
 }
 
 function copiar() {
@@ -232,7 +221,25 @@ function copiar() {
 }
 
 function limpiarFormulario() {
-    document.getElementById('metodo').value = ""; cargarProveedores();
+    // 1. Resetear el primer selector
+    document.getElementById('metodo').value = "";
+    
+    // 2. Forzar limpieza y bloqueo de los selectores secundarios
+    const pSel = document.getElementById('proveedor');
+    pSel.innerHTML = '<option value="">Primero elija método</option>';
+    pSel.disabled = true;
+
+    const oSel = document.getElementById('opcion');
+    oSel.innerHTML = '<option value="">Primero elija proveedor</option>';
+    oSel.disabled = true;
+
+    // 3. Limpiar absolutamente todos los inputs del contenedor dinámico
+    const todosLosInputs = document.querySelectorAll('#dynamicContainer input');
+    todosLosInputs.forEach(inp => inp.value = "");
+
+    // 4. Esconder el contenedor y resetear el texto final
+    document.getElementById('dynamicContainer').style.display = "none";
+    document.getElementById('finalText').innerText = "Esperando selección...";
 }
 
 function toggleTheme() {
