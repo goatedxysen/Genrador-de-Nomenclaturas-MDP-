@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomenclaturas MDP [1.4]</title>
+    <title>Nomenclaturas MDP [1.5]</title>
     <style>
         :root {
             --primary: #fec82f; 
@@ -75,7 +75,6 @@
             font-weight: 700;
             border-radius: 6px;
             width: auto;
-            flex-shrink: 0;
             transition: 0.2s;
         }
 
@@ -89,6 +88,7 @@
             letter-spacing: 0.05em;
         }
 
+        /* AJUSTE DE SELECTORES Y OPCIONES */
         select, input { 
             width: 100%; 
             padding: 14px 16px; 
@@ -96,16 +96,24 @@
             border: 2px solid var(--input-border); 
             border-radius: 8px; 
             box-sizing: border-box; 
-            background: rgba(0,0,0,0.2); 
+            background: #121211; /* Fondo más oscuro */
             color: var(--text); 
             font-size: 1rem; 
             font-family: var(--font-family);
             transition: all 0.2s ease;
+            appearance: none; /* Quita estilos nativos de algunos sistemas */
+        }
+
+        /* Esto asegura que el menú desplegable también sea oscuro */
+        select option {
+            background-color: #1a1a19; 
+            color: var(--text);
         }
 
         select:focus, input:focus {
             border-color: var(--primary);
             outline: none;
+            background: #000000;
         }
 
         .dynamic-inputs { 
@@ -281,7 +289,7 @@ const data = {
     debito: {
         "TotalPago": [
             "[59] AJUSTE POR ACREDITACION ERRADA ID: XXX",
-            "[59] DEBITO POR DEPÓSITO ID: - (username)"
+            "[59] DEBITO POR DEPÓSITO ID: XXX - (username)"
         ],
         "ALPS": ["[14] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
         "Astropay": ["[169] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
