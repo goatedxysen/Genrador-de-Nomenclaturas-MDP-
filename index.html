@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomenclaturas MDP [1.3]</title>
+    <style>
+        :root {
+            --primary: #fec82f; 
+            --primary-hover: #ffd65a;
+            /* Gris mucho más oscuro para el fondo */
+            --bg: #1a1a19; 
+            --card-bg: #242423;
+            --text: #f1f5f9; 
+            --input-border: #3d3d3c; 
+            --result-bg: #0f0f0f;
+            --font-family: 'Aptos', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        [data-theme="light"] {
+            --primary: #d9a406; 
+            --primary-hover: #b48905;
+            --bg: #f3f4f6; 
+            --card-bg: #ffffff;
+            --text: #1a1a19; 
+            --input-border: #d1d5db; 
+            --result-bg: #f9fafb;
+        }
+
+        body { 
+            font-family: var(--font-family); 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 40px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            transition: background 0.4s, color 0.4s; 
+        }
+
+        .container { 
+            background: var(--card-bg); 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); 
+            width: 100%; 
+            max-width: 650px;
+            border: 1px solid rgba(254, 200, 47, 0.05);
+        }
+
+        .header-tools { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+        }
+
+        h2 { 
+            color: var(--primary); 
+            margin: 0; 
+            font-size: 1.5rem; 
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* BOTÓN DE TEMA RECORTADO */
+        .theme-btn { 
+            background: var(--input-border); 
+            color: var(--text); 
+            border: none;
+            cursor: pointer;
+            padding: 8px 14px; 
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            width: auto; /* Evita que se estire */
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .theme-btn:hover {
+            filter: brightness(1.2);
+        }
+
+        label { 
+            display: block; 
+            margin-top: 20px; 
+            font-weight: 700; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            color: var(--primary);
+            letter-spacing: 0.05em;
+        }
+
+        select, input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            margin-top: 8px; 
+            border: 2px solid var(--input-border); 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            background: rgba(0,0,0,0.2); 
+            color: var(--text); 
+            font-size: 1rem; 
+            font-family: var(--font-family);
+            transition: all 0.2s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .dynamic-inputs { 
+            margin-top: 25px; 
+            padding: 25px; 
+            border-radius: 12px; 
+            background: rgba(254, 200, 47, 0.03); 
+            border: 1px solid var(--primary);
+            display: none; 
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .result-area { 
+            margin-top: 35px; 
+            padding: 30px; 
+            background: var(--result-bg); 
+            border-radius: 12px; 
+            border: 2px solid var(--primary); 
+            box-shadow: inset 0 0 15px rgba(254, 200, 47, 0.05);
+        }
+
+        #finalText { 
+            font-weight: 700; 
+            font-size: 1.25rem; 
+            line-height: 1.5;
+            color: var(--primary); 
+            text-align: center;
+            text-shadow: 0 0 10px rgba(254, 200, 47, 0.2);
+        }
+
+        .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+
+        button:not(.theme-btn) { 
+            flex: 1; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            transition: all 0.2s ease; 
+            font-family: var(--font-family); 
+        }
+
+        .copy-btn { 
+            background: var(--primary); 
+            color: #000; 
+            box-shadow: 0 4px 0px #b48905;
+        }
+        
+        .copy-btn:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0px #b48905;
+        }
+
+        .copy-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0px #b48905;
+        }
+
+        .clear-btn { 
+            background: transparent; 
+            border: 2px solid #ef4444; 
+            color: #ef4444; 
+        }
+        
+        .clear-btn:hover { 
+            background: #ef4444; 
+            color: white; 
+        }
+
+        /* HISTORIAL ESTILO MINIMALISTA */
+        .history-section {
+            width: 100%;
+            max-width: 650px;
+            margin-top: 30px;
+        }
+
+        .history-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 12px;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid var(--input-border);
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            color: #cbd5e1;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary);
+            background: var(--result-bg);
+            color: var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-tools">
+        <h2>Nomenclaturas MDP</h2>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeToggle">☀️ Modo Claro</button>
+    </div>
+
+    <label>Método</label>
+    <select id="metodo" onchange="cargarProveedores()">
+        <option value="">Selecciona una opción</option>
+        <option value="deposito">📥 Depósito</option>
+        <option value="retiro">📤 Retiro</option>
+        <option value="debito">💳 Débito</option>
+    </select>
+
+    <label>Proveedor</label>
+    <select id="proveedor" onchange="cargarOpciones()" disabled>
+        <option value="">Primero elija método</option>
+    </select>
+
+    <label>Variante</label>
+    <select id="opcion" onchange="gestionarInputs()" disabled>
+        <option value="">Primero elija proveedor</option>
+    </select>
+
+    <div id="dynamicContainer" class="dynamic-inputs">
+        <div id="field-REF" style="display:none"><label>Referencia (REF)</label><input type="text" id="val-REF" placeholder="Ej: 998877..." oninput="generar()"></div>
+        <div id="field-ID" style="display:none"><label>ID Operación</label><input type="text" id="val-ID" placeholder="Ej: 123456..." oninput="generar()"></div>
+        <div id="field-IDP" style="display:none"><label>ID Proveedor (IDP)</label><input type="text" id="val-IDP" placeholder="Ej: IDP-001..." oninput="generar()"></div>
+        <div id="field-CB" style="display:none"><label>Comprobante (CB)</label><input type="text" id="val-CB" placeholder="Ej: CB-99..." oninput="generar()"></div>
+        <div id="field-NT" style="display:none"><label>Número Ticket (NT)</label><input type="text" id="val-NT" placeholder="Ej: NT-88..." oninput="generar()"></div>
+        <div id="field-USER" style="display:none"><label>Username (Sin espacios)</label><input type="text" id="val-USER" placeholder="Ej: jdoe22" oninput="validarUser(this)"></div>
+    </div>
+
+    <div class="result-area">
+        <div id="finalText">Esperando selección...</div>
+        <div class="btn-group">
+            <button class="copy-btn" onclick="copiar()">Copiar Nomenclatura</button>
+            <button class="clear-btn" onclick="limpiarFormulario()">Limpiar</button>
+        </div>
+    </div>
+</div>
+
+<div class="history-section">
+    <div class="history-title">🕒 Historial de Copiado</div>
+    <ul id="historyList" style="list-style:none; padding:0; margin:0;"></ul>
+</div>
+
+<script>
+// (Toda la lógica de JS se mantiene idéntica para asegurar estabilidad)
+const data = {
+    deposito: {
+        "PagoFacil": ["[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO CB: XXX", "[179] ACREDITACION POR DEPOSITO NO REGISTRADO NT: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX ID: XXX"],
+        "AstroPay": ["[169] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX", "[169] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
+        "Rapyd": ["[178] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[178] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "GammaG": ["[171] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[171] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Gigadat": ["[185] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
+        "Directa24": ["[97] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "SafetyPay": ["[174] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "ALPS": ["[14] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Monnet": ["[64] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Payphone": ["[187] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Greenpay": ["[170] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Paycash": ["[190] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "Nuvei": ["[173] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
+        "R4": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: R4 REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: R4 REF: XXX ID: XXX"],
+        "Banco de Venezuela": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BDV REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BDV REF: XXX ID: XXX"],
+        "TotalPago": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX"]
+    },
+    retiro: {
+        "PagoFacil": ["[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX", "[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [02] ID: XXX"],
+        "Astropay": ["[169] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX", "[169] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "Gigadat": ["[185] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX"],
+        "Rapyd": ["[178] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "GammaG": ["[171] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "Directa24": ["[97] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "ALPS": ["[14] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "Nuvei": ["[173] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "Monnet": ["[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"],
+        "WireTransfer": ["[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"]
+    },
+    debito: {
+        "ALPS": ["[14] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Astropay": ["[169] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Banco de Venezuela": ["[176] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX - (username)"],
+        "Directa24": ["[97] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "GammaG": ["[171] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Gigadat": ["[185] INCORRECT ACCREDITATION ADJUSTMENT ID: XXX"],
+        "Greenpay": ["[170] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Monnet": ["[64] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Nuvei": ["[173] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "PagoFacil": ["[179] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[179] DEBITO POR DEPÓSITO ID: XXX"],
+        "Paycash": ["[190] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "Payphone": ["[187] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "R4": ["[177] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[177] DEBITO POR DEPÓSITO ID: XXX", "[177] DEBITO POR DEPÓSITO ID: XXX - (username)"],
+        "Rapyd": ["[178] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "SafetyPay": ["[174] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
+        "TotalPago": ["[59] AJUSTE POR ACREDITACION ERRADA ID: XXX"]
+    }
+};
+
+let historial = JSON.parse(localStorage.getItem('mdp_history')) || [];
+
+function actualizarHistorialUI() {
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
+    historial.forEach((texto) => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `<span>${texto}</span> <span style="opacity:0.5">📋</span>`;
+        li.onclick = () => {
+            navigator.clipboard.writeText(texto);
+            li.style.borderColor = "#fec82f";
+            setTimeout(() => li.style.borderColor = "#3d3d3c", 400);
+        };
+        list.appendChild(li);
+    });
+}
+
+function cargarProveedores() {
+    const met = document.getElementById('metodo').value;
+    const pSel = document.getElementById('proveedor');
+    pSel.innerHTML = '<option value="">Seleccione Proveedor...</option>';
+    if (met) {
+        Object.keys(data[met]).sort().forEach(p => {
+            let o = document.createElement('option'); o.value = p; o.innerText = p; pSel.appendChild(o);
+        });
+        pSel.disabled = false;
+    } else { pSel.disabled = true; }
+    gestionarInputs();
+}
+
+function cargarOpciones() {
+    const met = document.getElementById('metodo').value, prov = document.getElementById('proveedor').value;
+    const oSel = document.getElementById('opcion');
+    oSel.innerHTML = '<option value="">Seleccione Variante...</option>';
+    if (met && prov) {
+        data[met][prov].forEach(o => {
+            let opt = document.createElement('option'); opt.value = o; opt.innerText = o; oSel.appendChild(opt);
+        });
+        oSel.disabled = false;
+    } else { oSel.disabled = true; }
+    gestionarInputs();
+}
+
+function gestionarInputs() {
+    const base = document.getElementById('opcion').value;
+    const fields = { "REF: XXX": "field-REF", "ID: XXX": "field-ID", "IDP: XXX": "field-IDP", "CB: XXX": "field-CB", "NT: XXX": "field-NT", "(username)": "field-USER" };
+    let visible = false;
+    for (let key in fields) {
+        const div = document.getElementById(fields[key]);
+        const input = div.querySelector('input');
+        if (base && base.includes(key)) { div.style.display = "block"; visible = true; } 
+        else { div.style.display = "none"; input.value = ""; }
+    }
+    document.getElementById('dynamicContainer').style.display = visible ? "block" : "none";
+    generar();
+}
+
+function validarUser(input) {
+    input.value = input.value.replace(/\s/g, '');
+    generar();
+}
+
+function generar() {
+    let res = document.getElementById('opcion').value;
+    if (!res) { document.getElementById('finalText').innerText = "Esperando selección..."; return; }
+    if (res.includes("REF: XXX")) res = res.replace("REF: XXX", "REF: " + (document.getElementById('val-REF').value || "XXX"));
+    if (res.includes("ID: XXX")) res = res.replace("ID: XXX", "ID: " + (document.getElementById('val-ID').value || "XXX"));
+    if (res.includes("IDP: XXX")) res = res.replace("IDP: XXX", "IDP: " + (document.getElementById('val-IDP').value || "XXX"));
+    if (res.includes("CB: XXX")) res = res.replace("CB: XXX", "CB: " + (document.getElementById('val-CB').value || "XXX"));
+    if (res.includes("NT: XXX")) res = res.replace("NT: XXX", "NT: " + (document.getElementById('val-NT').value || "XXX"));
+    if (res.includes("(username)")) {
+        let userVal = document.getElementById('val-USER').value.replace(/\s/g, '');
+        res = res.replace("(username)", userVal ? "(" + userVal + ")" : "(username)");
+    }
+    document.getElementById('finalText').innerText = res;
+}
+
+function copiar() {
+    const txt = document.getElementById('finalText').innerText;
+    if (txt.includes("Esperando")) return;
+    navigator.clipboard.writeText(txt);
+    if (!historial.includes(txt)) {
+        historial.unshift(txt);
+        if (historial.length > 5) historial.pop();
+        localStorage.setItem('mdp_history', JSON.stringify(historial));
+        actualizarHistorialUI();
+    }
+    const btn = document.querySelector('.copy-btn');
+    btn.innerText = "¡COPIADO!";
+    setTimeout(() => btn.innerText = "Copiar Nomenclatura", 1200);
+}
+
+function limpiarFormulario() {
+    document.getElementById('metodo').value = "";
+    document.getElementById('proveedor').innerHTML = '<option value="">Elija método</option>';
+    document.getElementById('proveedor').disabled = true;
+    document.getElementById('opcion').innerHTML = '<option value="">Elija proveedor</option>';
+    document.getElementById('opcion').disabled = true;
+    document.querySelectorAll('#dynamicContainer input').forEach(inp => inp.value = "");
+    document.getElementById('dynamicContainer').style.display = "none";
+    document.getElementById('finalText').innerText = "Esperando selección...";
+}
+
+function toggleTheme() {
+    const b = document.body;
+    const btn = document.getElementById('themeToggle');
+    if (b.getAttribute('data-theme') === 'light') {
+        b.removeAttribute('data-theme');
+        btn.innerText = "☀️ Modo Claro";
+    } else {
+        b.setAttribute('data-theme', 'light');
+        btn.innerText = "🌙 Modo Oscuro";
+    }
+}
+actualizarHistorialUI();
+</script>
+</body>
+</html>
