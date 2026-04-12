@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomenclaturas MDP [1.5]</title>
+    <title>Nomenclaturas MDP [1.6]</title>
     <style>
         :root {
             --primary: #fec82f; 
@@ -13,6 +13,7 @@
             --text: #f1f5f9; 
             --input-border: #3d3d3c; 
             --result-bg: #0f0f0f;
+            --input-bg: #121211; /* Fondo inputs modo oscuro */
             --font-family: 'Aptos', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         [data-theme="light"] {
@@ -23,6 +24,7 @@
             --text: #1a1a19; 
             --input-border: #d1d5db; 
             --result-bg: #f9fafb;
+            --input-bg: #ffffff; /* Fondo inputs modo claro */
         }
 
         body { 
@@ -41,7 +43,7 @@
             background: var(--card-bg); 
             padding: 40px; 
             border-radius: 20px; 
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); 
             width: 100%; 
             max-width: 650px;
             border: 1px solid rgba(254, 200, 47, 0.05);
@@ -88,7 +90,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* AJUSTE DE SELECTORES Y OPCIONES */
         select, input { 
             width: 100%; 
             padding: 14px 16px; 
@@ -96,24 +97,22 @@
             border: 2px solid var(--input-border); 
             border-radius: 8px; 
             box-sizing: border-box; 
-            background: #121211; /* Fondo más oscuro */
+            background: var(--input-bg); 
             color: var(--text); 
             font-size: 1rem; 
             font-family: var(--font-family);
             transition: all 0.2s ease;
-            appearance: none; /* Quita estilos nativos de algunos sistemas */
         }
 
-        /* Esto asegura que el menú desplegable también sea oscuro */
+        /* Estilo para las opciones dentro del select según el tema */
         select option {
-            background-color: #1a1a19; 
+            background-color: var(--card-bg);
             color: var(--text);
         }
 
         select:focus, input:focus {
             border-color: var(--primary);
             outline: none;
-            background: #000000;
         }
 
         .dynamic-inputs { 
@@ -193,7 +192,8 @@
             transition: 0.2s;
             display: flex;
             justify-content: space-between;
-            color: #cbd5e1;
+            color: var(--text);
+            opacity: 0.9;
         }
 
         @keyframes fadeIn {
@@ -321,7 +321,7 @@ function actualizarHistorialUI() {
         li.onclick = () => {
             navigator.clipboard.writeText(texto);
             li.style.borderColor = "#fec82f";
-            setTimeout(() => li.style.borderColor = "#3d3d3c", 400);
+            setTimeout(() => li.style.borderColor = "var(--input-border)", 400);
         };
         list.appendChild(li);
     });
