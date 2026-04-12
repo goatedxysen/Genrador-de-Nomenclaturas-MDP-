@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomenclaturas MDP [1.6]</title>
+    <title>Nomenclaturas MDP [1.9]</title>
     <style>
         :root {
             --primary: #fec82f; 
@@ -13,7 +13,11 @@
             --text: #f1f5f9; 
             --input-border: #3d3d3c; 
             --result-bg: #0f0f0f;
-            --input-bg: #121211; /* Fondo inputs modo oscuro */
+            --input-bg: #121211; 
+            --option-bg: #242423;
+            --btn-clear-bg: #450a0a;
+            --btn-clear-text: #fca5a5;
+            --btn-clear-shadow: #7f1d1d;
             --font-family: 'Aptos', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         [data-theme="light"] {
@@ -24,7 +28,11 @@
             --text: #1a1a19; 
             --input-border: #d1d5db; 
             --result-bg: #f9fafb;
-            --input-bg: #ffffff; /* Fondo inputs modo claro */
+            --input-bg: #ffffff;
+            --option-bg: #ffffff;
+            --btn-clear-bg: #fee2e2;
+            --btn-clear-text: #b91c1c;
+            --btn-clear-shadow: #f87171;
         }
 
         body { 
@@ -104,9 +112,8 @@
             transition: all 0.2s ease;
         }
 
-        /* Estilo para las opciones dentro del select según el tema */
         select option {
-            background-color: var(--card-bg);
+            background-color: var(--option-bg);
             color: var(--text);
         }
 
@@ -141,7 +148,12 @@
             text-align: center;
         }
 
-        .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-group { 
+            display: flex; 
+            gap: 15px; 
+            margin-top: 25px; 
+            align-items: stretch; /* Asegura que ambos estiren igual */
+        }
 
         button:not(.theme-btn) { 
             flex: 1; 
@@ -151,19 +163,41 @@
             cursor: pointer; 
             font-weight: 800; 
             text-transform: uppercase; 
-            transition: all 0.2s ease; 
+            transition: all 0.1s ease; 
+            height: 55px; /* Altura fija para simetría total */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
         }
 
+        /* BOTÓN COPIAR */
         .copy-btn { 
             background: var(--primary); 
             color: #000; 
             box-shadow: 0 4px 0px #b48905;
         }
 
+        .copy-btn:active { 
+            transform: translateY(3px); 
+            box-shadow: 0 1px 0px #b48905; 
+        }
+
+        /* BOTÓN LIMPIAR - AJUSTADO PARA SIMETRÍA */
         .clear-btn { 
-            background: transparent; 
-            border: 2px solid #ef4444; 
-            color: #ef4444; 
+            background: var(--btn-clear-bg); 
+            border: 1px solid #ef4444; 
+            color: var(--btn-clear-text); 
+            box-shadow: 0 4px 0px var(--btn-clear-shadow);
+        }
+
+        .clear-btn:active { 
+            transform: translateY(3px); 
+            box-shadow: 0 1px 0px var(--btn-clear-shadow); 
+        }
+
+        .clear-btn:hover {
+            filter: brightness(1.2);
         }
 
         .history-section {
@@ -252,12 +286,10 @@
 </div>
 
 <script>
+// (El script permanece igual ya que la lógica no cambia, solo el estilo visual)
 const data = {
     deposito: {
-        "TotalPago": [
-            "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX",
-            "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BANESCO REF: XXX"
-        ],
+        "TotalPago": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BANESCO REF: XXX"],
         "PagoFacil": ["[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO CB: XXX", "[179] ACREDITACION POR DEPOSITO NO REGISTRADO NT: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX ID: XXX"],
         "AstroPay": ["[169] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX", "[169] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
         "Rapyd": ["[178] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[178] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
@@ -287,10 +319,7 @@ const data = {
         "WireTransfer": ["[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"]
     },
     debito: {
-        "TotalPago": [
-            "[59] AJUSTE POR ACREDITACION ERRADA ID: XXX",
-            "[59] DEBITO POR DEPÓSITO ID: XXX - (username)"
-        ],
+        "TotalPago": ["[59] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[59] DEBITO POR DEPÓSITO ID: XXX - (username)"],
         "ALPS": ["[14] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
         "Astropay": ["[169] AJUSTE POR ACREDITACION ERRADA ID: XXX"],
         "Banco de Venezuela": ["[176] AJUSTE POR ACREDITACION ERRADA ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX", "[176] DEBITO POR DEPÓSITO ID: XXX - (username)"],
