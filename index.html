@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomenclaturas MDP [1.9]</title>
+    <title>Nomenclaturas MDP [1.10]</title>
     <style>
         :root {
             --primary: #fec82f; 
@@ -152,7 +152,7 @@
             display: flex; 
             gap: 15px; 
             margin-top: 25px; 
-            align-items: stretch; /* Asegura que ambos estiren igual */
+            align-items: stretch;
         }
 
         button:not(.theme-btn) { 
@@ -164,14 +164,13 @@
             font-weight: 800; 
             text-transform: uppercase; 
             transition: all 0.1s ease; 
-            height: 55px; /* Altura fija para simetría total */
+            height: 55px; 
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.85rem;
         }
 
-        /* BOTÓN COPIAR */
         .copy-btn { 
             background: var(--primary); 
             color: #000; 
@@ -183,7 +182,6 @@
             box-shadow: 0 1px 0px #b48905; 
         }
 
-        /* BOTÓN LIMPIAR - AJUSTADO PARA SIMETRÍA */
         .clear-btn { 
             background: var(--btn-clear-bg); 
             border: 1px solid #ef4444; 
@@ -286,10 +284,13 @@
 </div>
 
 <script>
-// (El script permanece igual ya que la lógica no cambia, solo el estilo visual)
 const data = {
     deposito: {
-        "TotalPago": ["ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX", "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BANESCO REF: XXX"],
+        "TotalPago": [
+            "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX", 
+            "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: TOTALPAGOS REF: XXX ID: XXX",
+            "ACREDITACION POR PAGO NO PROCESADO PROVEEDOR: BANESCO REF: XXX"
+        ],
         "PagoFacil": ["[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO CB: XXX", "[179] ACREDITACION POR DEPOSITO NO REGISTRADO NT: XXX", "[179] ACREDITACION POR DEPOSITO NO PROCESADO IDP: XXX ID: XXX"],
         "AstroPay": ["[169] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX", "[169] UNPROCESSED DEPOSIT CREDIT ID: XXX"],
         "Rapyd": ["[178] UNPROCESSED DEPOSIT CREDIT ID: XXX", "[178] ACREDITACION POR DEPOSITO NO PROCESADO ID: XXX"],
