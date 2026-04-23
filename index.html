@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDP Master Tool [1.20]</title>
+    <title>Nomenclaturas MDP [2.0]</title>
     <style>
         :root {
             --primary: #fec82f; --primary-hover: #ffd65a; --bg: #1a1a19; 
@@ -11,43 +11,29 @@
             --result-bg: #0f0f0f; --input-bg: #121211; --btn-clear-bg: #450a0a;
             --btn-clear-text: #fca5a5; --font-family: 'Aptos', 'Segoe UI', system-ui, sans-serif;
         }
-        [data-theme="light"] {
-            --primary: #d9a406; --bg: #f3f4f6; --card-bg: #ffffff;
-            --text: #1a1a19; --input-border: #d1d5db; --result-bg: #f9fafb;
-            --input-bg: #ffffff; --btn-clear-bg: #fee2e2; --btn-clear-text: #b91c1c;
-        }
-
-        body { font-family: var(--font-family); background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; transition: 0.3s; }
+        body { font-family: var(--font-family); background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 680px; }
         .tab-btn { flex: 1; padding: 14px; border: none; background: var(--card-bg); color: var(--text); cursor: pointer; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; border: 1px solid var(--input-border); }
         .tab-btn.active { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(254, 200, 47, 0.3); }
-
         .container { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); width: 100%; max-width: 680px; box-sizing: border-box; }
         .hidden { display: none !important; }
-
         h2 { color: var(--primary); margin: 0 0 20px 0; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
         label { display: block; margin-top: 15px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; color: var(--primary); }
         select, input { width: 100%; padding: 12px; margin-top: 5px; border: 2px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text); font-size: 1rem; box-sizing: border-box; }
-
         .dynamic-inputs { margin-top: 20px; padding: 20px; border-radius: 12px; background: rgba(254, 200, 47, 0.05); border: 1px solid var(--primary); }
         .result-area { margin-top: 25px; padding: 25px; background: var(--result-bg); border-radius: 12px; border: 2px solid var(--primary); text-align: center; }
-        #finalText { font-weight: 700; font-size: 1.1rem; color: var(--primary); display: block; margin-bottom: 20px; }
-
+        #finalText { font-weight: 700; font-size: 1.1rem; color: var(--primary); display: block; margin-bottom: 20px; min-height: 1.5em; word-break: break-all; }
         .btn-group { display: flex; gap: 10px; }
         .action-btn { flex: 1; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
         .copy-btn { background: var(--primary); color: #000; }
         .clear-btn { background: var(--btn-clear-bg); color: var(--btn-clear-text); }
-
+        .history-section { width: 100%; max-width: 680px; margin-top: 25px; }
+        .history-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; opacity: 0.7; }
+        .history-item { background: var(--card-bg); padding: 12px; border-radius: 10px; font-size: 0.85rem; border: 1px solid var(--input-border); margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .response-card { background: var(--result-bg); border: 1px solid var(--input-border); border-radius: 12px; padding: 18px; margin-bottom: 15px; border-left: 5px solid var(--primary); }
         .response-header { font-weight: 800; font-size: 0.8rem; color: var(--primary); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .response-body { font-size: 0.95rem; line-height: 1.5; white-space: pre-line; }
-        
-        .btn-copy-small { 
-            background: var(--primary); color: #000; border: none; padding: 4px 10px; border-radius: 6px; 
-            font-size: 0.65rem; font-weight: 800; text-transform: uppercase; cursor: pointer; 
-            transition: all 0.2s; letter-spacing: 0.05em;
-        }
-        .btn-copy-small:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .btn-copy-small { background: var(--primary); color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; cursor: pointer; }
         .btn-copy-small.success { background: #4ade80 !important; }
     </style>
 </head>
@@ -59,7 +45,7 @@
 </div>
 
 <div id="tab-nom" class="container">
-    <h2>NOMENCLATURAS MDP</h2>
+    <h2>Nomenclaturas MDP</h2>
     <label>Método</label>
     <select id="metodo" onchange="actualizarProveedores()">
         <option value="">Seleccione...</option>
@@ -67,16 +53,10 @@
         <option value="retiro">📤 Retiro</option>
         <option value="debito">💳 Débito</option>
     </select>
-
     <label>Proveedor</label>
-    <select id="proveedor" onchange="actualizarOpciones()" disabled>
-        <option value="">Primero elija método</option>
-    </select>
-
+    <select id="proveedor" onchange="actualizarOpciones()" disabled><option value="">Elija método</option></select>
     <label>Variante</label>
-    <select id="opcion" onchange="gestionarInputs()" disabled>
-        <option value="">Primero elija proveedor</option>
-    </select>
+    <select id="opcion" onchange="gestionarInputs()" disabled><option value="">Elija proveedor</option></select>
 
     <div id="dynamicContainer" class="dynamic-inputs" style="display:none">
         <div id="f-REF" style="display:none"><label>Referencia (REF)</label><input type="text" id="v-REF" oninput="generar()"></div>
@@ -84,7 +64,7 @@
         <div id="f-IDP" style="display:none"><label>ID Proveedor (IDP)</label><input type="text" id="v-IDP" oninput="generar()"></div>
         <div id="f-CB" style="display:none"><label>Comprobante (CB)</label><input type="text" id="v-CB" oninput="generar()"></div>
         <div id="f-NT" style="display:none"><label>Número Ticket (NT)</label><input type="text" id="v-NT" oninput="generar()"></div>
-        <div id="f-USER" style="display:none"><label>Username</label><input type="text" id="v-USER" oninput="generar()"></div>
+        <div id="f-USER" style="display:none"><label>Username (Sin espacios)</label><input type="text" id="v-USER" oninput="validarUser(this); generar()"></div>
     </div>
 
     <div class="result-area">
@@ -104,11 +84,16 @@
         <option value="PAYPHONE">PAYPHONE</option>
         <option value="MONNET">MONNET</option>
         <option value="PagoFacil">PagoFacil</option>
-        <option value="BDV-R4">BDV - R4</option>
+        <option value="BDV-R4">BDV Y R4</option>
         <option value="GammaG">GammaG</option>
         <option value="TXT">TXT</option>
     </select>
     <div id="responses-list" style="margin-top: 20px;"></div>
+</div>
+
+<div class="history-section" id="hist-sec">
+    <div class="history-title">🕒 Historial Reciente</div>
+    <div id="historyList"></div>
 </div>
 
 <script>
@@ -133,14 +118,14 @@ const db = {
     },
     retiro: {
         "PagoFacil": ["[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX", "[179] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [02] ID: XXX"],
-        "Astropay": ["[169] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX", "[169] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
+        "Astropay": ["[169] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX", "[169] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX"],
         "Gigadat": ["[185] NOT APPROVED WITHDRAWAL ACCREDITATION ID: XXX"],
         "Rapyd": ["[178] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
         "GammaG": ["[171] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
         "Directa24": ["[97] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
         "ALPS": ["[14] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
-        "Nuvei": ["[173] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
         "Monnet": ["[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[64] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"],
+        "Nuvei": ["[173] ACREDITACION POR RETIRO APROBADO NO ACREDITADO [01] ID: XXX"],
         "WireTransfer": ["[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR BANCARIO [01] ID: XXX", "[7] ACREDITACION POR RETIRO NO ACREDITADO - ERROR EN DATOS BANCARIOS [02] ID: XXX"]
     },
     debito: {
@@ -166,108 +151,112 @@ const db = {
 const guia = [
     { prov: "TXT", titulo: "TRANSACCIÓN LIQUIDADA", texto: "El retiro fue procesado de manera exitosa el 16 abr 2026, 15:30:07\n\nEn caso de que el usuario insista con el reclamo, solicitarle el estado de cuenta en formato PDF." },
     { prov: "GammaG", titulo: "DEPÓSITO MENOR AL MÍNIMO", texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió 0.00001 BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia:\n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"." },
-    { prov: "PAYPHONE", titulo: "TRANSACCIÓN CANCELADA", texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento. Si el usuario insiste con el reclamo, es necesario que lo escalen nuevamente, adjuntando una captura con la conversación con su entidad bancaria." },
+    { prov: "PAYPHONE", titulo: "TRANSACCIÓN CANCELADA", texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento." },
     { prov: "MONNET", titulo: "TRANSACCIÓN PROCESADA", texto: "El retiro se encuentra procesado de manera exitosa.\n\nEn caso de que el usuario insista con el reclamo, solicitarle los movimientos bancarios. Se anexa ejemplo." },
-    { prov: "MONNET", titulo: "RETIRO A CUENTA DE TERCERO", texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: [X]\n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular; además, una vez solicite el retiro a su cuenta (propia), debe verificar cuidadosamente todos los datos ingresados." },
+    { prov: "MONNET", titulo: "RETIRO A CUENTA DE TERCERO", texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: [X]\n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular." },
     { prov: "PagoFacil", titulo: "RETIRO A OTRA CUENTA", texto: "Por favor, sondear con el usuario si posee alguna otra cuenta/billetera, como por ejemplo (BCP) y solicitarle el estado de cuenta de la misma." },
-    { prov: "PAYPHONE", titulo: "TRANSACCIÓN REEMBOLSADA", texto: "Luego de revisar el caso, confirmamos que la transacción figura como reembolsada en nuestro sistema.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido reembolsada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento." },
     { prov: "BDV-R4", titulo: "TRANSFERENCIAS INMEDIATAS", texto: "Indicarle al usuario que no realice transferencias a este método de depósito, en caso de que desee realizar su depósito mediante transferencia bancaria puede utilizar el método de 'TotalPago'" },
-    { prov: "GammaG", titulo: "COMISIÓN CRIPTO", texto: "Buenas tardes equipo, luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento. En su comprobante se muestra la comisión principal, pero la red también puede descontar otros cargos adicionales que no siempre se reflejan allí." }
+    { prov: "GammaG", titulo: "COMISIÓN CRIPTO", texto: "Luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento." }
 ];
+
+let historial = JSON.parse(localStorage.getItem('mdp_hist_final')) || [];
 
 function showTab(id) {
     document.getElementById('tab-nom').classList.toggle('hidden', id !== 'tab-nom');
     document.getElementById('tab-resp').classList.toggle('hidden', id !== 'tab-resp');
+    document.getElementById('hist-sec').classList.toggle('hidden', id !== 'tab-nom');
     document.getElementById('btn-nom').classList.toggle('active', id === 'tab-nom');
     document.getElementById('btn-resp').classList.toggle('active', id === 'tab-resp');
     if(id === 'tab-resp') renderRespuestas();
 }
 
+function validarUser(i) { i.value = i.value.replace(/\s/g, ''); }
+
 function actualizarProveedores() {
-    const met = document.getElementById('metodo').value;
-    const pSel = document.getElementById('proveedor');
-    pSel.innerHTML = '<option value="">Seleccione Proveedor...</option>';
-    if (met && db[met]) {
-        Object.keys(db[met]).sort().forEach(p => pSel.innerHTML += `<option value="${p}">${p}</option>`);
-        pSel.disabled = false;
-    } else { pSel.disabled = true; }
+    const m = document.getElementById('metodo').value, p = document.getElementById('proveedor');
+    p.innerHTML = '<option value="">Seleccione Proveedor...</option>';
+    if(m) { Object.keys(db[m]).sort().forEach(k => p.innerHTML += `<option value="${k}">${k}</option>`); p.disabled = false; }
+    else p.disabled = true;
     actualizarOpciones();
 }
 
 function actualizarOpciones() {
-    const met = document.getElementById('metodo').value, prov = document.getElementById('proveedor').value;
-    const oSel = document.getElementById('opcion');
-    oSel.innerHTML = '<option value="">Seleccione Variante...</option>';
-    if (met && prov && db[met][prov]) {
-        db[met][prov].forEach(o => oSel.innerHTML += `<option value="${o}">${o}</option>`);
-        oSel.disabled = false;
-    } else { oSel.disabled = true; }
+    const m = document.getElementById('metodo').value, pr = document.getElementById('proveedor').value, o = document.getElementById('opcion');
+    o.innerHTML = '<option value="">Seleccione Variante...</option>';
+    if(m && pr) { db[m][pr].forEach(v => o.innerHTML += `<option value="${v}">${v}</option>`); o.disabled = false; }
+    else o.disabled = true;
     gestionarInputs();
 }
 
 function gestionarInputs() {
-    const base = document.getElementById('opcion').value;
-    const fields = { "REF: XXX": "f-REF", "ID: XXX": "f-ID", "IDP: XXX": "f-IDP", "CB: XXX": "f-CB", "NT: XXX": "f-NT", "(username)": "f-USER" };
-    let anyVisible = false;
-    for (let key in fields) {
-        const el = document.getElementById(fields[key]);
-        if (base.includes(key)) { el.style.display = "block"; anyVisible = true; } 
+    const v = document.getElementById('opcion').value;
+    const f = { "REF: XXX": "f-REF", "ID: XXX": "f-ID", "IDP: XXX": "f-IDP", "CB: XXX": "f-CB", "NT: XXX": "f-NT", "(username)": "f-USER" };
+    let any = false;
+    for(let k in f) {
+        const el = document.getElementById(f[k]);
+        if(v.includes(k)) { el.style.display = "block"; any = true; }
         else { el.style.display = "none"; el.querySelector('input').value = ""; }
     }
-    document.getElementById('dynamicContainer').style.display = anyVisible ? "block" : "none";
+    document.getElementById('dynamicContainer').style.display = any ? "block" : "none";
     generar();
 }
 
 function generar() {
     let res = document.getElementById('opcion').value;
-    if (!res) { document.getElementById('finalText').innerText = "Esperando selección..."; return; }
-    const ref = document.getElementById('v-REF').value || "XXX";
-    const id = document.getElementById('v-ID').value || "XXX";
-    const idp = document.getElementById('v-IDP').value || "XXX";
-    const cb = document.getElementById('v-CB').value || "XXX";
-    const nt = document.getElementById('v-NT').value || "XXX";
-    const user = document.getElementById('v-USER').value || "username";
-    res = res.replace(/REF: XXX/g, "REF: " + ref).replace(/ID: XXX/g, "ID: " + id).replace(/IDP: XXX/g, "IDP: " + idp).replace(/CB: XXX/g, "CB: " + cb).replace(/NT: XXX/g, "NT: " + nt).replace(/\(username\)/g, "(" + user + ")");
+    if(!res) { document.getElementById('finalText').innerText = "Esperando selección..."; return; }
+    const maps = { "REF: XXX": "v-REF", "ID: XXX": "v-ID", "IDP: XXX": "v-IDP", "CB: XXX": "v-CB", "NT: XXX": "v-NT" };
+    for(let k in maps) {
+        const val = document.getElementById(maps[k]).value || "XXX";
+        res = res.replace(k, k.replace("XXX", val));
+    }
+    res = res.replace("(username)", "(" + (document.getElementById('v-USER').value || "username") + ")");
     document.getElementById('finalText').innerText = res;
 }
 
 function copiarNom() {
     const t = document.getElementById('finalText').innerText;
-    if(!t.includes("Esperando")) {
-        navigator.clipboard.writeText(t);
-        const b = document.querySelector('.copy-btn'); b.innerText = "¡COPIADO!";
-        setTimeout(() => b.innerText = "Copiar", 1000);
+    if(t.includes("Esperando")) return;
+    navigator.clipboard.writeText(t);
+    if(!historial.includes(t)) { 
+        historial.unshift(t); 
+        historial = historial.slice(0,5); 
+        localStorage.setItem('mdp_hist_final', JSON.stringify(historial)); 
+        updateHistUI(); 
     }
+    const btn = document.querySelector('.copy-btn'); btn.innerText = "¡COPIADO!";
+    setTimeout(() => btn.innerText = "Copiar", 1000);
 }
 
-function resetear() { location.reload(); }
+function updateHistUI() {
+    document.getElementById('historyList').innerHTML = historial.map(h => `
+        <div class="history-item" onclick="copyFast('${h.replace(/'/g,"\\'")}')">
+            <span>${h}</span>
+            <small>📋</small>
+        </div>`).join('');
+}
+
+function copyFast(t) { navigator.clipboard.writeText(t); }
 
 function renderRespuestas() {
-    const filter = document.getElementById('filter-prov').value;
-    const list = document.getElementById('responses-list');
-    list.innerHTML = "";
-    guia.filter(r => !filter || r.prov === filter).forEach(r => {
-        list.innerHTML += `
-            <div class="response-card">
-                <div class="response-header">
-                    <span>${r.titulo} (${r.prov})</span>
-                    <button onclick="copyAny('${r.texto.replace(/\n/g, '\\n').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-copy-small">Copiar</button>
-                </div>
-                <div class="response-body">${r.texto}</div>
-            </div>`;
-    });
+    const f = document.getElementById('filter-prov').value;
+    document.getElementById('responses-list').innerHTML = guia.filter(r => !f || r.prov === f).map(r => `
+        <div class="response-card">
+            <div class="response-header"><span>${r.titulo} (${r.prov})</span><button class="btn-copy-small" onclick="copyAny('${r.texto.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')">Copiar</button></div>
+            <div class="response-body">${r.texto}</div>
+        </div>`).join('');
 }
 
 function copyAny(t) {
     navigator.clipboard.writeText(t);
     const btn = event.target;
-    btn.innerText = "¡COPIADO!";
-    btn.classList.add('success');
-    setTimeout(() => {
-        btn.innerText = "Copiar";
-        btn.classList.remove('success');
-    }, 1000);
+    if(btn.tagName === "BUTTON") { 
+        btn.innerText = "¡OK!"; btn.classList.add('success'); 
+        setTimeout(() => { btn.innerText = "Copiar"; btn.classList.remove('success'); }, 800); 
+    }
 }
+
+function resetear() { location.reload(); }
+updateHistUI();
 </script>
 </body>
 </html>
