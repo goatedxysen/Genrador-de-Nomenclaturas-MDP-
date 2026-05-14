@@ -81,10 +81,10 @@
     <label>Filtrar Proveedor</label>
     <select id="filter-prov" onchange="renderRespuestas()">
         <option value="">Todos los casos</option>
-        <option value="PAYPHONE">PAYPHONE</option>
-        <option value="MONNET">MONNET</option>
+        <option value="PayPhone">PayPhone</option>
+        <option value="Monnet">Monnet</option>
         <option value="PagoFacil">PagoFacil</option>
-        <option value="BDV-R4">BDV Y R4</option>
+        <option value="BDV/R4">BDV/R4</option>
         <option value="GammaG">GammaG</option>
         <option value="TXT">TXT</option>
     </select>
@@ -149,14 +149,72 @@ const db = {
 };
 
 const guia = [
-    { prov: "TXT", titulo: "TRANSACCIÓN LIQUIDADA", texto: "El retiro fue procesado de manera exitosa el 16 abr 2026, 15:30:07\n\nEn caso de que el usuario insista con el reclamo, solicitarle el estado de cuenta en formato PDF." },
-    { prov: "GammaG", titulo: "DEPÓSITO MENOR AL MÍNIMO", texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió 0.00001 BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia:\n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"." },
-    { prov: "PAYPHONE", titulo: "TRANSACCIÓN CANCELADA", texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento." },
-    { prov: "MONNET", titulo: "TRANSACCIÓN PROCESADA", texto: "El retiro se encuentra procesado de manera exitosa.\n\nEn caso de que el usuario insista con el reclamo, solicitarle los movimientos bancarios. Se anexa ejemplo." },
-    { prov: "MONNET", titulo: "RETIRO A CUENTA DE TERCERO", texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: [X]\n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular." },
-    { prov: "PagoFacil", titulo: "RETIRO A OTRA CUENTA", texto: "Por favor, sondear con el usuario si posee alguna otra cuenta/billetera, como por ejemplo (BCP) y solicitarle el estado de cuenta de la misma." },
-    { prov: "BDV-R4", titulo: "TRANSFERENCIAS INMEDIATAS", texto: "Indicarle al usuario que no realice transferencias a este método de depósito, en caso de que desee realizar su depósito mediante transferencia bancaria puede utilizar el método de 'TotalPago'" },
-    { prov: "GammaG", titulo: "COMISIÓN CRIPTO", texto: "Luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento." }
+    {
+        prov: "PayPhone",
+        titulo: "TRANSACCIÓN CANCELADA",
+        texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la\ntransacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento. Si el usuario insiste con el reclamo, es necesario que lo escalen nuevamente, adjuntando una captura con la conversación con su entidad bancaria."
+    },
+    {
+        prov: "Monnet",
+        titulo: "TRANSACCIÓN PROCESADA",
+        texto: "El retiro se encuentra procesado de manera exitosa.\n\nEn caso de que el usuario insista con el reclamo, solicitarle los movimientos bancarios. Se anexa ejemplo."
+    },
+    {
+        prov: "Monnet",
+        titulo: "RETIRO A CUENTA DE TERCERO",
+        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: 61860088\n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular; además, una vez solicite el retiro a su cuenta (propia), debe verificar cuidadosamente todos los datos ingresados."
+    },
+    {
+        prov: "PagoFacil",
+        titulo: "RETIRO A OTRA CUENTA BANCARIA",
+        texto: "Por favor, sondear con el usuario si posee alguna otra cuenta/billetera, como por ejemplo (BCP) y solicitarle el estado de cuenta de la misma."
+    },
+    {
+        prov: "PayPhone",
+        titulo: "TRANSACCIÓN REEMBOLSADA",
+        texto: "Luego de revisar el caso, confirmamos que la transacción figura como reversada en nuestro sistema.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido reversada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento."
+    },
+    {
+        prov: "BDV/R4",
+        titulo: "TRANSFERENCIAS INMEDIATAS",
+        texto: "Indicarle al usuario que no realice transferencias a este método de depósito, en caso de que desee realizar su depósito mediante transferencia bancaria puede utilizar el método de \"TotalPago\""
+    },
+    {
+        prov: "BDV/R4",
+        titulo: "DEPÓSITOS SOLO A CUENTA PROPIA",
+        texto: "Por favor indicarle al usuario que solamente realice depósitos con cuentas bancarias donde él sea el titular de la misma, para evitar posibles inconvenientes a futuros."
+    },,
+    {
+        prov: "GammaG",
+        titulo: "COMISIÓN",
+        texto: "Buenas tardes equipo, luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento. En su comprobante se muestra la comisión principal, pero la red también puede descontar otros cargos adicionales que no siempre se reflejan allí."
+    },
+    {
+        prov: "TXT",
+        titulo: "TRANSACCIÓN LIQUIDADA",
+        texto: "El retiro fue procesado de manera exitosa el 16 abr 2026, 15:30:07\n\nEn caso de que el usuario insista con el reclamo, solicitarle el estado de cuenta en formato PDF."
+    },
+    {
+        prov: "GammaG",
+        titulo: "DEPÓSITO MENOR AL MÍNIMO",
+        texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió 0.00001 BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia: \n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"."
+    },
+    {
+        prov: "Monnet",
+        titulo: "RETIRO REGULARIZADO",
+        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID:\n\nAl momento de comunicarse con el usuario, es de suma importancia indicarle que verifique y confirme cuidadosamente todos los datos ingresados al momento de solicitar el retiro nuevamente. Esto con la finalidad de evitar futuros inconvenientes."
+    },
+    {
+    prov: "PagoFacil",
+    titulo: "Cambio de Estatus - Rechazado",
+    texto: "El retiro cambió de estatus a rechazado por banco y el saldo fue devuelto al balance del usuario."
+    },
+    {
+    prov: "PagoFacil",
+    titulo: "Cambio de Estatus - Aprobado",
+    texto: "El retiro cambió a estatus Aprobado."
+    },
+    
 ];
 
 let historial = JSON.parse(localStorage.getItem('mdp_hist_final')) || [];
