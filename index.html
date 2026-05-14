@@ -35,6 +35,16 @@
         .response-body { font-size: 0.95rem; line-height: 1.5; white-space: pre-line; }
         .btn-copy-small { background: var(--primary); color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; cursor: pointer; }
         .btn-copy-small.success { background: #4ade80 !important; }
+        .nota-general { background: #fffbe7;  color: #ad6800;  border-left: 5px solid #fec82f;   padding: 14px 18px;   margin-bottom: 22px;  border-radius: 8px;font-size: 1em;font-weight: 600;box-shadow: 0 2px 16px 0 rgba(254,200,47,0.08);
+}
+body.light-mode .nota-general {
+    background: #fff9e0;
+    color: #ad6800;
+}
+body:not(.light-mode) .nota-general {
+    background: #35332a;
+    color: #ffe167;
+}
     </style>
 </head>
 <body>
@@ -78,6 +88,9 @@
 
 <div id="tab-resp" class="container hidden">
     <h2>Guía de Respuestas</h2>
+    <div id="nota-general" class="nota-general">
+        ⚠️ <b>NOTA GENERAL:</b> Antes de brindar una respuesta, recuerda siempre validar el caso, no todos los casos son iguales.
+    </div>
     <label>Filtrar Proveedor</label>
     <select id="filter-prov" onchange="renderRespuestas()">
         <option value="">Todos los casos</option>
@@ -87,6 +100,8 @@
         <option value="BDV/R4">BDV/R4</option>
         <option value="GammaG">GammaG</option>
         <option value="TXT">TXT</option>
+        <option value="ALPS">ALPS</option>
+        <option value="SafetyPay">SafetyPay</option>
     </select>
     <div id="responses-list" style="margin-top: 20px;"></div>
 </div>
@@ -162,7 +177,7 @@ const guia = [
     {
         prov: "Monnet",
         titulo: "RETIRO A CUENTA DE TERCERO",
-        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: 61860088\n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular; además, una vez solicite el retiro a su cuenta (propia), debe verificar cuidadosamente todos los datos ingresados."
+        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: XXX \n\nAl momento de comunicarse con el usuario, indicarle que solo puede solicitar retiros a cuentas en donde él sea el titular; además, una vez solicite el retiro a su cuenta (propia), debe verificar cuidadosamente todos los datos ingresados."
     },
     {
         prov: "PagoFacil",
@@ -192,7 +207,7 @@ const guia = [
     {
         prov: "TXT",
         titulo: "TRANSACCIÓN LIQUIDADA",
-        texto: "El retiro fue procesado de manera exitosa el 16 abr 2026, 15:30:07\n\nEn caso de que el usuario insista con el reclamo, solicitarle el estado de cuenta en formato PDF."
+        texto: "El retiro fue procesado de manera exitosa el XXX \n\nEn caso de que el usuario insista con el reclamo, solicitarle el estado de cuenta en formato PDF."
     },
     {
         prov: "GammaG",
@@ -200,9 +215,16 @@ const guia = [
         texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió 0.00001 BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia: \n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"."
     },
     {
+        prov: "GammaG",
+        titulo: "Depósito de moneda distinta a la red",
+        texto: `El usuario, al momento de realizar el depósito, envió USDT a través de la red TRX. Sin embargo, la dirección de billetera utilizada está destinada únicamente para la red Tron (TRC20). Debido a esta incompatibilidad de redes, los fondos no pudieron ser acreditados en nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia: 
+
+"Tenga cuidado de enviar solo TRX a esta dirección. El envío de cualquier otra moneda puede provocar un retraso en el depósito o la pérdida de fondos."`
+    },
+    {
         prov: "Monnet",
         titulo: "RETIRO REGULARIZADO",
-        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID:\n\nAl momento de comunicarse con el usuario, es de suma importancia indicarle que verifique y confirme cuidadosamente todos los datos ingresados al momento de solicitar el retiro nuevamente. Esto con la finalidad de evitar futuros inconvenientes."
+        texto: "El usuario poseía un retiro aprobado no acreditado que fue regularizado bajo el ID: XXX \n\nAl momento de comunicarse con el usuario, es de suma importancia indicarle que verifique y confirme cuidadosamente todos los datos ingresados al momento de solicitar el retiro nuevamente. Esto con la finalidad de evitar futuros inconvenientes."
     },
     {
     prov: "PagoFacil",
@@ -214,8 +236,34 @@ const guia = [
     titulo: "Cambio de Estatus - Aprobado",
     texto: "El retiro cambió a estatus Aprobado."
     },
-    
+    {
+    prov: "ALPS",
+    titulo: "Depósito de (expirado, rechazado, pendiente) a aprobado",
+    texto: "Luego de validaciones por parte del proveedor, la transacción fue aprobada bajo el ID: XXX"
+},
+{
+    prov: "ALPS",
+    titulo: "Depósito destinado a otro comercio",
+    texto: "Luego de validar con el proveedor, nos confirman que la transacción no llegó a nuestras cuentas; por lo tanto, el usuario deberá comunicarse con su entidad bancaria para que le brinden mayor información."
+},
+{
+    prov: "ALPS",
+    titulo: "MONTO MENOR AL MÍNIMO",
+    texto: "Luego de validar la transacción, hemos detectado que el monto es de XXX MXN; sin embargo, el monto mínimo para depositar en nuestra plataforma es de 100 MXN, lo que quiere decir que no fue dirigido a nuestro comercio."
+},
+{
+    prov: "GammaG",
+    titulo: "Retiros (anexaron estado de cuenta bancario)",
+    texto: "Al tratarse de un retiro en criptomonedas, este no se reflejará en su estado de cuenta bancario, sino en la dirección de billetera que el usuario ingresó en la plataforma. Es necesario que este sea suministrado para realizar las validaciones correspondientes."
+},
+{
+    prov: "SafetyPay",
+    titulo: "No pertenece a nuestro comercio",
+    texto: "Buen día, luego de validar con el proveedor nos informan que la transacción no va dirigida a nuestro comercio, es requerido que el usuario se comunique al siguiente correo soporte.usuarios@paysafegroup.zendesk.com para que le brinden la ayuda necesaria."
+}
 ];
+
+let reemplazosXXX = {};
 
 let historial = JSON.parse(localStorage.getItem('mdp_hist_final')) || [];
 
@@ -225,7 +273,10 @@ function showTab(id) {
     document.getElementById('hist-sec').classList.toggle('hidden', id !== 'tab-nom');
     document.getElementById('btn-nom').classList.toggle('active', id === 'tab-nom');
     document.getElementById('btn-resp').classList.toggle('active', id === 'tab-resp');
-    if(id === 'tab-resp') renderRespuestas();
+    if(id === 'tab-resp') window.actualizarXXX = function(id, valor, idx) {
+  reemplazosXXX[id] = valor;
+  renderRespuestas();
+}
 }
 
 function validarUser(i) { i.value = i.value.replace(/\s/g, ''); }
@@ -297,12 +348,47 @@ function copyFast(t) { navigator.clipboard.writeText(t); }
 
 function renderRespuestas() {
     const f = document.getElementById('filter-prov').value;
-    document.getElementById('responses-list').innerHTML = guia.filter(r => !f || r.prov === f).map(r => `
-        <div class="response-card">
-            <div class="response-header"><span>${r.titulo} (${r.prov})</span><button class="btn-copy-small" onclick="copyAny('${r.texto.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')">Copiar</button></div>
+    document.getElementById('responses-list').innerHTML =
+      guia.filter(r => !f || r.prov === f).map((r,i) => {
+        let tieneXXX = r.texto.includes("XXX");
+        let id = "resp" + i;
+        let valor = reemplazosXXX[id] || "";
+        let textoMostrado = r.texto;
+        if (tieneXXX) {
+          let input = 
+            `<div style="margin-bottom:8px;">
+                <label style="font-size:0.85em;font-weight:700;color:var(--primary);">Valor para XXX:</label>
+                <input 
+                    type="text" 
+                    style="padding:6px 10px;border:1.5px solid var(--input-border);border-radius:5px;width:150px;"
+                    oninput="actualizarXXX('${id}',this.value,${i})" 
+                    value="${valor}" 
+                    placeholder="Escribe aquí"
+                />
+            </div>`;
+          textoMostrado = r.texto.replace(/XXX/g, valor || "XXX");
+          return `
+          <div class="response-card">
+            <div class="response-header">
+              <span>${r.titulo} (${r.prov})</span>
+              <button class="btn-copy-small" onclick="copyAny('${textoMostrado.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')">Copiar</button>
+            </div>
+            ${input}
+            <div class="response-body">${textoMostrado}</div>
+          </div>`;
+        } else {
+          return `
+          <div class="response-card">
+            <div class="response-header">
+              <span>${r.titulo} (${r.prov})</span>
+              <button class="btn-copy-small" onclick="copyAny('${r.texto.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')">Copiar</button>
+            </div>
             <div class="response-body">${r.texto}</div>
-        </div>`).join('');
+          </div>`;
+        }
+      }).join('');
 }
+
 
 function copyAny(t) {
     navigator.clipboard.writeText(t);
