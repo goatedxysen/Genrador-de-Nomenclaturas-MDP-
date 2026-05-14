@@ -167,7 +167,7 @@ const guia = [
     {
         prov: "PayPhone",
         titulo: "TRANSACCIÓN CANCELADA",
-        texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la\ntransacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento. Si el usuario insiste con el reclamo, es necesario que lo escalen nuevamente, adjuntando una captura con la conversación con su entidad bancaria."
+        texto: "Luego de revisar el caso, confirmamos que la transacción figura como cancelada en nuestro sistema, por lo que no fue procesada ni liquidada al comercio.\n\nEs posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la\ntransacción haya sido cancelada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento. Si el usuario insiste con el reclamo, es necesario que lo escalen nuevamente, adjuntando una captura con la conversación con su entidad bancaria."
     },
     {
         prov: "Monnet",
@@ -182,12 +182,12 @@ const guia = [
     {
         prov: "PagoFacil",
         titulo: "RETIRO A OTRA CUENTA BANCARIA",
-        texto: "Por favor, sondear con el usuario si posee alguna otra cuenta/billetera, como por ejemplo (BCP) y solicitarle el estado de cuenta de la misma."
+        texto: "Por favor, sondear con el usuario si posee alguna otra cuenta/billetera, como por ejemplo (XXX) y solicitarle el estado de cuenta de la misma."
     },
     {
         prov: "PayPhone",
         titulo: "TRANSACCIÓN REEMBOLSADA",
-        texto: "Luego de revisar el caso, confirmamos que la transacción figura como reversada en nuestro sistema.\n\nes posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido reversada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento."
+        texto: "Luego de revisar el caso, confirmamos que la transacción figura como reversada en nuestro sistema.\n\nEs posible que su entidad bancaria realizó una retención temporal o un débito provisional, aun cuando la transacción haya sido reversada del lado del procesador. el mismo banco realiza la liberación o devolución del monto de manera automática, según sus tiempos internos.\n\nPor ello, recomendamos que el usuario se comunique directamente con su banco emisor para solicitar la revisión del movimiento."
     },
     {
         prov: "BDV/R4",
@@ -202,7 +202,7 @@ const guia = [
     {
         prov: "GammaG",
         titulo: "COMISIÓN",
-        texto: "Buenas tardes equipo, luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento. En su comprobante se muestra la comisión principal, pero la red también puede descontar otros cargos adicionales que no siempre se reflejan allí."
+        texto: "Luego de validar la transacción, se verificó que el monto acreditado es inferior debido al procesamiento de la criptomoneda. Durante la transacción, la red aplica comisiones y ajustes que pueden variar según las condiciones del momento. En su comprobante se muestra la comisión principal, pero la red también puede descontar otros cargos adicionales que no siempre se reflejan allí."
     },
     {
         prov: "TXT",
@@ -212,7 +212,7 @@ const guia = [
     {
         prov: "GammaG",
         titulo: "DEPÓSITO MENOR AL MÍNIMO",
-        texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió 0.00001 BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia: \n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"."
+        texto: "El usuario, al momento de realizar el depósito, envió un monto inferior a lo establecido; el monto mínimo es de 0.0001 BTC; sin embargo, envió XXX BTC. Debido a ello, los fondos no llegaron a nuestro comercio. Cabe destacar que, durante el proceso de depósito, se muestra de manera explícita la siguiente advertencia: \n\n\"Tenga en cuenta el límite de depósito mínimo indicado, ya que no se pueden procesar depósitos por debajo de este límite\"."
     },
     {
         prov: "GammaG",
@@ -274,9 +274,19 @@ function showTab(id) {
     document.getElementById('btn-nom').classList.toggle('active', id === 'tab-nom');
     document.getElementById('btn-resp').classList.toggle('active', id === 'tab-resp');
     if(id === 'tab-resp') window.actualizarXXX = function(id, valor, idx) {
-  reemplazosXXX[id] = valor;
-  renderRespuestas();
-}
+    reemplazosXXX[id] = valor;
+    const input = document.querySelector(`input[data-id="${id}"]`);
+    let selStart = input && input.selectionStart;
+    let selEnd = input && input.selectionEnd;
+    renderRespuestas();
+    const newInput = document.querySelector(`input[data-id="${id}"]`);
+    if (newInput) {
+        newInput.focus();
+        if (selStart !== null) {
+            newInput.setSelectionRange(selStart, selEnd);
+        }
+    }
+};
 }
 
 function validarUser(i) { i.value = i.value.replace(/\s/g, ''); }
@@ -356,16 +366,17 @@ function renderRespuestas() {
         let textoMostrado = r.texto;
         if (tieneXXX) {
           let input = 
-            `<div style="margin-bottom:8px;">
-                <label style="font-size:0.85em;font-weight:700;color:var(--primary);">Valor para XXX:</label>
-                <input 
-                    type="text" 
-                    style="padding:6px 10px;border:1.5px solid var(--input-border);border-radius:5px;width:150px;"
-                    oninput="actualizarXXX('${id}',this.value,${i})" 
-                    value="${valor}" 
-                    placeholder="Escribe aquí"
-                />
-            </div>`;
+    `<div style="margin-bottom:8px;">
+        <label style="font-size:0.85em;font-weight:700;color:var(--primary);">Valor para XXX:</label>
+        <input 
+            type="text" 
+            data-id="${id}"
+            style="padding:6px 10px;border:1.5px solid var(--input-border);border-radius:5px;width:150px;"
+            oninput="actualizarXXX('${id}',this.value,${i})" 
+            value="${valor}" 
+            placeholder="Escribe aquí"
+        />
+    </div>`;
           textoMostrado = r.texto.replace(/XXX/g, valor || "XXX");
           return `
           <div class="response-card">
